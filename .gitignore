@@ -45,7 +45,9 @@ wheels/
 .installed.cfg 
 *.egg 
 *.manifest 
-*.spec 
+*.spec
+
+/server/env
 
 # Installer logs 
 pip-log.txt 
