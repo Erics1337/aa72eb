@@ -18,9 +18,8 @@ const useStyles = makeStyles((theme) => ({
     color: "#9CADC8",
     letterSpacing: -0.17,
   },
-  badge: {
-    marginRight: 50,
-    marginTop: 20,
+  badgeBox: {
+    margin: 'auto'
   }
 }));
 
@@ -40,8 +39,8 @@ const ChatContent = (props) => {
           {latestMessageText}
         </Typography>
       </Box>
-      <Box>
-        <Badge badgeContent={4} color="primary" className={classes.badge} />
+      <Box className={classes.badgeBox}>
+        <Badge badgeContent={4} color="primary" />
       </Box>
     </Box>
   );
