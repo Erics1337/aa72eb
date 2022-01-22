@@ -32,7 +32,7 @@ class Messages(APIView):
                 message_json = message.to_dict()
                 return JsonResponse({"message": message_json, "sender": body["sender"]})
 
-            # if we don't have conversation id, find a conversation to m       ake sure it doesn't already exist
+            # if we don't have conversation id, find a conversation to make sure it doesn't already exist
             conversation = Conversation.find_conversation(sender_id, recipient_id)
             if not conversation:
                 # create conversation
