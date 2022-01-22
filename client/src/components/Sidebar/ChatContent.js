@@ -1,6 +1,6 @@
-import React from "react";
-import { Box, Badge, Typography } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+import React from "react"
+import { Box, Badge, Typography } from "@material-ui/core"
+import { makeStyles } from "@material-ui/core/styles"
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -19,15 +19,16 @@ const useStyles = makeStyles((theme) => ({
     letterSpacing: -0.17,
   },
   badgeBox: {
-    margin: 'auto'
-  }
-}));
+    marginLeft: "auto",
+    marginRight: 30,
+  },
+}))
 
 const ChatContent = (props) => {
-  const classes = useStyles();
+  const classes = useStyles()
 
-  const { conversation } = props;
-  const { latestMessageText, otherUser, unreadCount } = conversation;
+  const { conversation } = props
+  const { latestMessageText, otherUser } = conversation
 
   return (
     <Box className={classes.root}>
@@ -40,10 +41,16 @@ const ChatContent = (props) => {
         </Typography>
       </Box>
       <Box className={classes.badgeBox}>
-        <Badge badgeContent={unreadCount} color="primary" />
+        <Badge
+          badgeContent={
+            conversation.messages.filter((msg) => !msg.readByRecipient)
+              .length
+          }
+          color='primary'
+        />
       </Box>
     </Box>
-  );
-};
+  )
+}
 
-export default ChatContent;
+export default ChatContent
