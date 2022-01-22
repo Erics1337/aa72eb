@@ -48,3 +48,17 @@ class Messages(APIView):
             return JsonResponse({"message": message_json, "sender": sender})
         except Exception as e:
             return HttpResponse(status=500)
+
+    # Set read status for all messages in conversation for given user
+        """expects {conversationId, senderId } in body"""
+    def put(self, request):
+        try:
+            body = request.data
+            conversation_id = body.get("conversationId")
+            senderId = body.get("senderId")
+
+            Message.objects.filter(senderId=senderId, conversation_id=conversation_id).update(readByRecipient=True)
+            return HttpResponse(status=204)
+
+        except Exception as e:
+            return HttpResponse(status=500)
