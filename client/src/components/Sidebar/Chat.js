@@ -44,7 +44,6 @@ const Chat = (props) => {
     )
     }
     if (unreadMessages > 0) {
-      console.log('unreadMessages', unreadMessages)
         clearUnreadMessages(conversation.id, conversation.otherUser.id)
     }
   
