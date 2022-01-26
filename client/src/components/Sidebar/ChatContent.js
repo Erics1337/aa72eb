@@ -1,6 +1,7 @@
 import React from "react"
 import { Box, Badge, Typography } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
+import { connect } from 'react-redux';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -27,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
 const ChatContent = (props) => {
   const classes = useStyles()
 
-  const { conversation } = props
+  const { conversation, activeConversation, user } = props
   const { latestMessageText, otherUser } = conversation
 
   return (
@@ -43,8 +44,9 @@ const ChatContent = (props) => {
       <Box className={classes.badgeBox}>
         <Badge
           badgeContent={
-            conversation.messages.filter((msg) => !msg.readByRecipient)
-              .length
+            activeConversation !== otherUser.username ?
+            conversation.messages.filter((msg) => !msg.readByRecipient && msg.senderId !== user.id)
+              .length : 0
           }
           color='primary'
         />
@@ -53,4 +55,12 @@ const ChatContent = (props) => {
   )
 }
 
-export default ChatContent
+const mapStateToProps = (state) => {
+  return {
+    user: state.user,
+    activeConversation: state.activeConversation,
+  };
+};
+
+
+export default connect(mapStateToProps, null)(ChatContent);
