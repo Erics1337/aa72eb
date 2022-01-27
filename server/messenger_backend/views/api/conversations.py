@@ -36,9 +36,10 @@ class Conversations(APIView):
                 convo_dict = {
                     "id": convo.id,
                     "messages": [
-                        message.to_dict(["id", "text", "senderId", "createdAt", 'readByRecipient'])
+                        message.to_dict(["id", "text", "senderId", "createdAt", 'read'])
                         for message in convo.messages.all()
                     ],
+                    'unreadCount': convo.messages.filter(read=False).exclude(senderId=user_id).count(),
                 }
 
                 # set properties for notification count and latest message preview

@@ -57,7 +57,7 @@ class Messages(APIView):
             conversation_id = body.get("conversationId")
             senderId = body.get("senderId")
 
-            Message.objects.filter(senderId=senderId, conversation_id=conversation_id, readByRecipient=False).update(readByRecipient=True)
+            Message.objects.filter(senderId=senderId, conversation_id=conversation_id, read=False).update(read=True)
             return HttpResponse(status=204)
 
         except Exception as e:

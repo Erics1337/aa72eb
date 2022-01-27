@@ -26,29 +26,16 @@ const Chat = (props) => {
   const { conversation, activeConversation, clearUnreadMessages } = props;
   const { otherUser } = conversation;
   
-  const [unreadMessages, setUnreadMessages] = useState(0);
-
   
   const handleClick = async (conversation) => {
     await props.setActiveChat(conversation.otherUser.username);
-
   };
   
   
-  useEffect(() => {
-    console.log('activeConversation', activeConversation)
-    if(activeConversation === conversation.otherUser.username) {
-    setUnreadMessages(
-      conversation.messages.filter((message) => message.readByRecipient === false 
-        && message.senderId === conversation.otherUser.id).length
-    )
-    }
-    if (unreadMessages > 0) {
+  useEffect(() => {    
+      activeConversation === conversation.otherUser.username && conversation.unreadCount > 0 &&
         clearUnreadMessages(conversation.id, conversation.otherUser.id)
-    }
-  
-    
-  }, [unreadMessages, conversation, activeConversation, clearUnreadMessages]);
+  }, [activeConversation, clearUnreadMessages, conversation.unreadCount]);
 
 
   return (
