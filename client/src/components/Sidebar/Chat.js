@@ -22,14 +22,13 @@ const useStyles = makeStyles((theme) => ({
 
 const Chat = (props) => {
   const classes = useStyles();
-  const { conversation, activeConversation, clearUnreadMessages, user} = props;
+  const { conversation, clearUnreadMessages, user} = props;
   const { otherUser } = conversation;
   
   
   const handleClick = async (conversation) => {
     await props.setActiveChat(conversation.otherUser.username);
-    otherUser.username !== activeConversation && otherUser.username !== user.username &&
-    clearUnreadMessages(conversation.id, conversation.otherUser.id, activeConversation)
+    clearUnreadMessages(conversation.id, conversation.otherUser.id, user.id)
   };
   
 

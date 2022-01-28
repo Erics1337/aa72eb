@@ -40,6 +40,7 @@ class Conversations(APIView):
                         for message in convo.messages.all()
                     ],
                     'unreadCount': convo.messages.filter(read=False).exclude(senderId=user_id).count(),
+                    'readReceiptCount': convo.messages.filter(read=False).filter(senderId=user_id).count(),
                 }
 
                 # set properties for notification count and latest message preview

@@ -6,9 +6,9 @@ import {
   setNewMessage,
   setSearchedUsers,
   setClearedMessages,
+  setClearedReadReceipts
 } from "../conversations";
 import { gotUser, setFetchingStatus } from "../user";
-import store from "../../store";
 
 
 axios.interceptors.request.use(async function (config) {
@@ -131,12 +131,25 @@ export const searchUsers = (searchTerm) => async (dispatch) => {
   }
 };
 
-export const clearUnreadMessages = (conversationId, senderId, activeConversation) => async (dispatch) => {
+export const clearUnreadMessages = (conversationId, senderId, userId) => async (dispatch) => {
   try {
-    if (senderId === activeConversation)
-    sendReadReceipt(conversationId, senderId);
+    if (senderId === userId){
+      sendReadReceipt(conversationId, senderId);
+      dispatch(setClearedMessages(conversationId, senderId));
+      await axios.put(`/api/messages`, { conversationId, senderId });
+    } else {
+      sendReadReceipt(conversationId, senderId);
+      dispatch(setClearedMessages(conversationId, senderId));
+    }
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+export const clearReadReceipts = (conversationId, senderId) => async (dispatch) => {
+  try {
     await axios.put(`/api/messages`, { conversationId, senderId });
-    dispatch(setClearedMessages(conversationId, senderId));
+    dispatch(setClearedReadReceipts(conversationId, senderId));
   } catch (error) {
     console.error(error);
   }
