@@ -30,7 +30,7 @@ export const gotConversations = (conversations) => {
 export const setNewMessage = (message, sender) => {
   return {
     type: SET_MESSAGE,
-    payload: { message, sender: sender || null },
+    payload: { message, sender: sender || null},
   };
 };
 
@@ -69,10 +69,10 @@ export const addConversation = (recipientId, newMessage) => {
   };
 };
 
-export const setClearedMessages = (conversationId, senderId) => {
+export const setClearedMessages = (conversationId, userId) => {
   return {
     type: CLEAR_MESSAGES,
-    payload: { conversationId, senderId },
+    payload: { conversationId, userId },
   }
 }
 

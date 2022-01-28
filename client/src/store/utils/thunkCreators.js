@@ -8,6 +8,8 @@ import {
   setClearedMessages,
 } from "../conversations";
 import { gotUser, setFetchingStatus } from "../user";
+import store from "../../store";
+
 
 axios.interceptors.request.use(async function (config) {
   const token = await localStorage.getItem("messenger-token");
@@ -89,16 +91,25 @@ const sendMessage = (data, body) => {
     message: data.message,
     recipientId: body.recipientId,
     sender: data.sender,
+    senderName: data.senderName,
+    conversationId: data.conversationId,
   });
 };
+
+
+const sendReadReceipt = (conversationId, senderId) => {
+  socket.emit("read-receipt", {
+    conversationId,
+    senderId,
+    });
+};
+
 
 // message format to send: {recipientId, text, conversationId}
 // conversationId will be set to null if its a brand new conversation
 export const postMessage = (body) => async (dispatch) => {
   try {
     const data = await saveMessage(body);
-
-
     if (!body.conversationId) {
       dispatch(addConversation(body.recipientId, data.message));
     } else {
@@ -120,8 +131,10 @@ export const searchUsers = (searchTerm) => async (dispatch) => {
   }
 };
 
-export const clearUnreadMessages = (conversationId, senderId) => async (dispatch) => {
+export const clearUnreadMessages = (conversationId, senderId, activeConversation) => async (dispatch) => {
   try {
+    if (senderId === activeConversation)
+    sendReadReceipt(conversationId, senderId);
     await axios.put(`/api/messages`, { conversationId, senderId });
     dispatch(setClearedMessages(conversationId, senderId));
   } catch (error) {
