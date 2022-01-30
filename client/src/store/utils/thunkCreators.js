@@ -5,8 +5,11 @@ import {
   addConversation,
   setNewMessage,
   setSearchedUsers,
+  setClearedMessages,
+  setClearedReadReceipts
 } from "../conversations";
 import { gotUser, setFetchingStatus } from "../user";
+
 
 axios.interceptors.request.use(async function (config) {
   const token = await localStorage.getItem("messenger-token");
@@ -88,16 +91,25 @@ const sendMessage = (data, body) => {
     message: data.message,
     recipientId: body.recipientId,
     sender: data.sender,
+    senderName: data.senderName,
+    conversationId: data.conversationId,
   });
 };
+
+
+const sendReadReceipt = (conversationId, senderId) => {
+  socket.emit("read-receipt", {
+    conversationId,
+    senderId,
+    });
+};
+
 
 // message format to send: {recipientId, text, conversationId}
 // conversationId will be set to null if its a brand new conversation
 export const postMessage = (body) => async (dispatch) => {
   try {
     const data = await saveMessage(body);
-
-
     if (!body.conversationId) {
       dispatch(addConversation(body.recipientId, data.message));
     } else {
@@ -118,3 +130,27 @@ export const searchUsers = (searchTerm) => async (dispatch) => {
     console.error(error);
   }
 };
+
+export const clearUnreadMessages = (conversationId, senderId, userId) => async (dispatch) => {
+  try {
+    if (senderId === userId){
+      sendReadReceipt(conversationId, senderId);
+      dispatch(setClearedMessages(conversationId, senderId));
+      await axios.put(`/api/messages`, { conversationId, senderId });
+    } else {
+      sendReadReceipt(conversationId, senderId);
+      dispatch(setClearedMessages(conversationId, senderId));
+    }
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+export const clearReadReceipts = (conversationId, senderId) => async (dispatch) => {
+  try {
+    await axios.put(`/api/messages`, { conversationId, senderId });
+    dispatch(setClearedReadReceipts(conversationId, senderId));
+  } catch (error) {
+    console.error(error);
+  }
+}

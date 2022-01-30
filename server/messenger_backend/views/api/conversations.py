@@ -32,14 +32,15 @@ class Conversations(APIView):
             )
 
             conversations_response = []
-
             for convo in conversations:
                 convo_dict = {
                     "id": convo.id,
                     "messages": [
-                        message.to_dict(["id", "text", "senderId", "createdAt"])
+                        message.to_dict(["id", "text", "senderId", "createdAt", 'read'])
                         for message in convo.messages.all()
                     ],
+                    'unreadCount': convo.messages.filter(read=False).exclude(senderId=user_id).count(),
+                    'readReceiptCount': convo.messages.filter(read=False).filter(senderId=user_id).count(),
                 }
 
                 # set properties for notification count and latest message preview
@@ -51,7 +52,6 @@ class Conversations(APIView):
                     convo_dict["otherUser"] = convo.user1.to_dict(user_fields)
                 elif convo.user2 and convo.user2.id != user_id:
                     convo_dict["otherUser"] = convo.user2.to_dict(user_fields)
-
                 # set property for online status of the other user
                 if convo_dict["otherUser"]["id"] in online_users:
                     convo_dict["otherUser"]["online"] = True
