@@ -3,7 +3,7 @@ from django.db import models
 from . import utils
 from .conversation import Conversation
 from .user import User
-
+from django.contrib.postgres.fields import ArrayField
 
 class Message(utils.CustomModel):
     text = models.TextField(null=False)
@@ -19,4 +19,8 @@ class Message(utils.CustomModel):
     )
     createdAt = models.DateTimeField(auto_now_add=True, db_index=True)
     updatedAt = models.DateTimeField(auto_now=True)
-    read = models.BooleanField(default=False)
+    read = ArrayField(
+        ArrayField(
+            models.BooleanField(default=False),
+        ),
+    )
